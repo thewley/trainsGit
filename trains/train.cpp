@@ -3,7 +3,6 @@
 //	Train.cpp - Definitionsfil för Train-klassen
 
 #include "train.h"
-#include "diesel_locomotive.h"
 
 Train::Train()
 	:trainID(0), trainNumber(0), delay(0), avarageSpeed(0), state(NOT_ASSEMBLED)

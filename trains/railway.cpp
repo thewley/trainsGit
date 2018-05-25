@@ -6,17 +6,14 @@
 #include <fstream>
 #include<sstream>
 #include<algorithm>
-#include"Sit_Wagon.h"
-#include"Sleeping_Wagon.h"
-#include"Open_Wagon.h"
-#include"Covered_Wagon.h"
-#include"Electric_Locomotive.h"
-#include"Diesel_Locomotive.h"
+#include"Wagon.h"
+#include"locomotive.h"
 
 Railway::Railway()
 {
 	vTrainStation = new std::vector<Train_Station*>;
-	vTimeTable = new std::vector<TimeTable>;
+	vEvent = new std::vector<Event>;
+	eventQueue = new std::priority_queue<std::shared_ptr<Event>, std::vector<std::shared_ptr<Event>>, TimeComparison>;
 }
 
 Railway::~Railway()
@@ -29,10 +26,12 @@ Railway::~Railway()
 		delete idx;
 		idx = nullptr;
 	}
+	
 	vTrainStation->clear();
 	delete vTrainStation;
-	delete vTimeTable;
+	delete vEvent;
 	delete tmpTs;
+	delete eventQueue;
 }
 
 void Railway::addTrainStation(Train_Station &ts)
@@ -133,7 +132,7 @@ void Railway::readTrainStations()
 
 void Railway::readTrains()
 {
-	TimeTable tt;
+	
 	std::string tmpStr;
 
 	std::ifstream inFile;
@@ -144,43 +143,64 @@ void Railway::readTrains()
 
 	while (std::getline(inFile, tmpStr))
 	{
-		std::string time;
+		int time;
+		int trainId, maxSpeed;
+		Travel travelFrom, travelTo;
+		std::string fromTime, toTime, fordon;
 		std::stringstream ss(tmpStr);
-
-		ss >> tt.trainId;
-		ss >> tt.travelFrom.trainstation;
-		ss >> tt.travelTo.trainstation;
-		ss >> time;
-		tt.travelFrom.time = timeToMin(time);
-		ss >> time;
-		tt.travelTo.time = timeToMin(time);
-		ss >> tt.maxSpeed;
+		ss >> trainId;
+		ss >> travelFrom.trainstation;
+		ss >> travelTo.trainstation;
+		ss >> fromTime;
+		travelFrom.time = timeToMin(fromTime);
+		ss >> toTime;
+		travelTo.time = timeToMin(toTime);
+		ss >> maxSpeed;
 		ss.get();
-		std::getline(ss, tt.fordon);
+		std::getline(ss, fordon);
 
-		vTimeTable->push_back(tt);
-	}
+		time = timeToMin(fromTime) - TIME_TO_ASSEMBLE;
+
+
+		scheduleTT(new Not_Assembled(time,trainId,travelFrom,travelTo,maxSpeed,fordon));
+		
+	}	
+}
+
+void Railway::printTT(std::shared_ptr<Event> aEvent)
+{
+	std::cout << "Train id: " << aEvent->getTrainId() << std::endl;
+	std::cout << "Traveling from: " << aEvent->getTravelFrom().trainstation << std::endl;
+	std::cout << "Dep time: " << aEvent->getTravelFrom().time << std::endl;
+	std::cout << "Traveling to: " << aEvent->getTravelTo().trainstation << std::endl;
+	std::cout << "Arrival time: " << aEvent->getTravelTo().time << std::endl;
+	std::cout << "Max speed: " << aEvent->getMaxSpeed() << std::endl;
+
 }
 
 void Railway::printTT()
 {
-	for (auto &idx : *vTimeTable)
+	for (auto &idx : *vEvent)
 	{
-		std::cout << "Train id: " << idx.trainId << std::endl;
-		std::cout << "Traveling from: " << idx.travelFrom.trainstation << std::endl;
-		std::cout << "Dep time: " <<idx.travelFrom.time << std::endl;
-		std::cout << "Traveling to: "<< idx.travelTo.trainstation << std::endl;
-		std::cout << "Arrival time: " << idx.travelTo.time << std::endl;
-		std::cout << "Max speed: " << idx.maxSpeed << std::endl;
+		std::cout << "Train id: " << idx.getTrainId() << std::endl;
+		std::cout << "Traveling from: " << idx.getTravelFrom().trainstation << std::endl;
+		std::cout << "Dep time: " <<idx.getTravelFrom().time << std::endl;
+		std::cout << "Traveling to: "<< idx.getTravelTo().trainstation << std::endl;
+		std::cout << "Arrival time: " << idx.getTravelTo().time << std::endl;
+		std::cout << "Max speed: " << idx.getMaxSpeed() << std::endl;
 	}
 }
 
-void Railway::sortTT()
+void Railway::printFirstInQueue()
 {
-	std::sort(vTimeTable->begin(), vTimeTable->end(), [&](const TimeTable &tt1, const TimeTable &tt2) 
-	{
-		return tt1.travelFrom.time < tt2.travelFrom.time;
-	});
+	std::shared_ptr<Event> ev = eventQueue->top();
+	eventQueue->pop();
+	printTT(ev);
+}
+
+void Railway::scheduleTT(Event *newEvent)
+{
+	eventQueue->emplace(newEvent);
 }
 
 int Railway::timeToMin(std::string &aString)

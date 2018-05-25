@@ -116,34 +116,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="Covered_Wagon.h" />
-    <ClInclude Include="Diesel_Locomotive.h" />
-    <ClInclude Include="Electric_Locomotive.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="fordon.h" />
     <ClInclude Include="locomotive.h" />
     <ClInclude Include="mempool.h" />
     <ClInclude Include="memstat.hpp" />
-    <ClInclude Include="Open_Wagon.h" />
     <ClInclude Include="railway.h" />
-    <ClInclude Include="Sit_Wagon.h" />
-    <ClInclude Include="Sleeping_Wagon.h" />
     <ClInclude Include="train.h" />
     <ClInclude Include="Train_Map.h" />
     <ClInclude Include="Train_Station.h" />
     <ClInclude Include="Wagon.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Covered_Wagon.cpp" />
-    <ClCompile Include="Diesel_Locomotive.cpp" />
-    <ClCompile Include="Electric_Locomotive.cpp" />
+    <ClCompile Include="Event.cpp" />
+    <ClCompile Include="locomotive.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Open_Wagon.cpp" />
     <ClCompile Include="railway.cpp" />
-    <ClCompile Include="Sit_Wagon.cpp" />
-    <ClCompile Include="Sleeping_Wagon.cpp" />
     <ClCompile Include="train.cpp" />
     <ClCompile Include="Train_Map.cpp" />
     <ClCompile Include="Train_Station.cpp" />
+    <ClCompile Include="Wagon.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

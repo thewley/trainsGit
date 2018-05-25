@@ -2,12 +2,7 @@
 //	Projekt Trains V1.0
 //	main
 
-
-#include"constants.h"
 #include"train.h"
-#include"Open_Wagon.h"
-#include"Diesel_Locomotive.h"
-#include"Sit_Wagon.h"
 #include"Train_Map.h"
 #include"Train_Station.h"
 #include"memstat.hpp"
@@ -55,15 +50,15 @@ int main()
 	rw.print();
 	rw.readTrains();
 	rw.printTT();
-	rw.sortTT();
 	std::cout << "*************************************************" << std::endl;
 	rw.printTT();
 
 	std::cout << "*******************************************" << std::endl << std::endl;
 	std::cin.get();
 	std::cout << "*******************************************" << std::endl << std::endl;
-	std::cout << "*******************************************" << std::endl << std::endl;
-	std::cout << "*******************************************" << std::endl << std::endl;
-	std::cout << "*******************************************" << std::endl << std::endl;
-	std::cout << "*******************************************" << std::endl << std::endl;
+	
+	rw.printFirstInQueue();
+	rw.printFirstInQueue();
+
+	std::cin.get();
 }

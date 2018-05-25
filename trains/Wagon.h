@@ -15,4 +15,61 @@ public:
 	virtual void print() =0;
 };
 
+class Sit_Wagon : public Wagon
+{
+private:
+	bool internet;
+	int nrOfSeats;
+
+public:
+
+	Sit_Wagon(int aFordonID, bool aInternet, int aNrOfSeats) : internet(aInternet), nrOfSeats(aNrOfSeats), Wagon::Wagon(aFordonID) {};
+
+	// Inherited via Wagon
+	virtual void print() override;
+
+};
+
+class Sleeping_Wagon : public Wagon
+{
+private:
+	int nrOfBeds;
+
+public:
+	Sleeping_Wagon(int aFordonID, int aNrOfBeds) : nrOfBeds(aNrOfBeds), Wagon::Wagon(aFordonID) { std::cout << "Sleeping_Wagon" << std::endl; };
+
+	// Inherited via Wagon
+	virtual void print() override;
+};
+
+
+class Open_Wagon : public Wagon
+{
+private:
+
+	float capacity;
+	float area;
+
+public:
+
+	Open_Wagon(int aFordonID, float aCapacity, float aArea) :capacity(aCapacity), area(aArea), Wagon::Wagon(aFordonID) { std::cout << "Open_Wagon" << std::endl; };
+
+	// Inherited via Wagon
+	virtual void print() override;
+
+};
+
+
+class Covered_Wagon : public Wagon
+{
+private:
+	float area;
+public:
+	Covered_Wagon(int aFordonID, float aArea) :area(aArea), Wagon::Wagon(aFordonID) { std::cout << "Covered_Wagon" << std::endl; };
+
+	// Inherited via Wagon
+	virtual void print() override;
+
+};
+
 #endif

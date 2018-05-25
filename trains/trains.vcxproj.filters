@@ -24,15 +24,6 @@
     <ClInclude Include="constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Covered_Wagon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Diesel_Locomotive.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Electric_Locomotive.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fordon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,15 +36,6 @@
     <ClInclude Include="memstat.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Open_Wagon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sit_Wagon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sleeping_Wagon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="train.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -63,27 +45,12 @@
     <ClInclude Include="railway.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Covered_Wagon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Diesel_Locomotive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Electric_Locomotive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Open_Wagon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sit_Wagon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sleeping_Wagon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="train.cpp">
@@ -96,6 +63,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="railway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wagon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="locomotive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
