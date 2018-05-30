@@ -46,19 +46,9 @@ int main()
 
 	Railway rw;
 	
-	rw.readTrainStations();
-	rw.print();
-	rw.readTrains();
-	rw.printTT();
-	std::cout << "*************************************************" << std::endl;
-	rw.printTT();
+	rw.run();
 
-	std::cout << "*******************************************" << std::endl << std::endl;
-	std::cin.get();
-	std::cout << "*******************************************" << std::endl << std::endl;
-	
-	rw.printFirstInQueue();
-	rw.printFirstInQueue();
+	std::cout << "*************************************************" << std::endl;
 
 	std::cin.get();
 }

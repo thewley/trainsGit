@@ -5,7 +5,6 @@
 #ifndef TRAIN_STATION_H
 #define TRAIN_STATION_H
 
-#include"fordon.h"
 #include"constants.h"
 #include"train.h"
 #include<memory>
@@ -30,7 +29,9 @@ public:
 	~Train_Station();
 
 	void setStationName(std::string aStationName) { stationName = aStationName; }
-	std::string getStationName() const { return stationName; }
+	std::string getTrainStationName() const { return stationName; }
+	
+	bool assembleTrain(Train &aTrain);
 	void print();
 	//void printMap();
 	void addFordon(Fordon &aFordon);

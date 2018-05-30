@@ -27,19 +27,25 @@ private:
 	int trainID;
 	int trainNumber;
 	int delay;
+	double maxSpeed;
 	double avarageSpeed;
 	State state;
 	Travel travelFrom;
 	Travel travelTo;
+	std::string fordonInTrain;
 
 public:
 
 	Train();
+	Train(int aTrainID, double aMaxSpeed, Travel aTravelFrom, Travel aTravelTo, std::string aFordonInTrain);
 	~Train();
 
 
 	void add(Fordon &aFordon);
-
+	Travel getTravelFrom() const { return travelFrom; }
+	std::string getFordonInTrain() const { return fordonInTrain; }
+	void setDelay(int aDelay) { delay += 10; }
+	void setState(State aState) { state = aState; }
 	void print();
 
 };

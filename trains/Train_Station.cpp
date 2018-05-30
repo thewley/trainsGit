@@ -5,6 +5,7 @@
 #include "Train_Station.h"
 #include <utility>
 #include <algorithm>
+#include <sstream>
 
 
 Train_Station::Train_Station()
@@ -28,6 +29,34 @@ Train_Station::~Train_Station()
 	delete vTrain;
 	delete unusedFordon;
 	
+}
+
+bool Train_Station::assembleTrain(Train &aTrain)
+{
+	std::stringstream ss(aTrain.getFordonInTrain());
+	int tmpType;
+
+	while (ss >> tmpType)
+	{
+		auto it = std::find_if(unusedFordon->begin(), unusedFordon->end(), [&](const Fordon *vFordon)
+		{
+			return vFordon->getFordonType() == tmpType;
+		});
+		
+		if (it != unusedFordon->end())
+		{
+			Fordon *f = *it;
+			aTrain.add(*f);
+			unusedFordon->erase(it);
+		}
+		else
+		{
+			aTrain.setDelay(10);
+			return false;
+		}
+	}
+	addTrain(aTrain);
+	return true;
 }
 
 void Train_Station::print()

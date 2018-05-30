@@ -8,10 +8,17 @@ Train::Train()
 	:trainID(0), trainNumber(0), delay(0), avarageSpeed(0), state(NOT_ASSEMBLED)
 {
 	vFordon = new std::vector<Fordon*>;
-	travelFrom.trainstation = "koket";
+	travelFrom.trainstation = "";
 	travelFrom.time = 0;
-	travelTo.trainstation = "datorn";
+	travelTo.trainstation = "";
 	travelTo.time = 0;
+}
+
+Train::Train(int aTrainID, double aMaxSpeed, Travel aTravelFrom, Travel aTravelTo, std::string aFordonInTrain)
+	:trainID(aTrainID), maxSpeed(aMaxSpeed), travelFrom(aTravelFrom), travelTo(aTravelTo), fordonInTrain(aFordonInTrain)
+{ 
+	state = NOT_ASSEMBLED;
+	vFordon = new std::vector<Fordon*>; 
 }
 
 Train::~Train()

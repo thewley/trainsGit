@@ -5,20 +5,18 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include"train.h"
+#include "Train_Station.h"
+//#include "railway.h"
+#include <queue>
 
+class TimeComparison;
 
 class Event
 {
 protected:
 	int time;
 
-	Train * train;
-	int trainId;
-	Travel travelFrom;
-	Travel travelTo;
-	double maxSpeed;
-	std::string fordon;
+	std::shared_ptr<Train> train;
 
 public:
 
@@ -26,41 +24,37 @@ public:
 
 	virtual ~Event() {}
 
-	virtual void processEvent() = 0;
+	virtual void processEvent(std::vector<std::shared_ptr<Train_Station>> &vTrainStation) = 0;
 	
 	int getTime() const { return time; }
 
-	virtual Travel getTravelFrom() const { return travelFrom; }
-	virtual Travel getTravelTo() const { return travelTo; }
-	virtual int getTrainId() const { return trainId; }
-	virtual int getMaxSpeed() const { return maxSpeed; }
-	virtual std::string getFordon() const { return fordon; }
+	virtual void print();
 
 };
 
 class Not_Assembled : public Event
 {
 protected:
-	Train * train;
-	int trainId;
-	Travel travelFrom;
-	Travel travelTo;
-	double maxSpeed;
-	std::string fordon;
+	std::shared_ptr<Train> train;
+
 public:
-	Not_Assembled(int t, int aTrainId, Travel aTF, Travel aTT, int aMaxSpeed, std::string aFordon) :Event::Event(t), trainId(aTrainId), travelFrom(aTF), travelTo(aTT), maxSpeed(aMaxSpeed), fordon(aFordon) {}
-	
+	Not_Assembled(int t, Train *aTrain) :Event::Event(t), train(aTrain) {}
 	
 	// Inherited via Event
-	virtual void processEvent() override;
-
-	Travel getTravelFrom() const override { return travelFrom; }
-	Travel getTravelTo() const override { return travelTo; }
-	int getTrainId() const override { return trainId; }
-	int getMaxSpeed() const override { return maxSpeed; }
-	std::string getFordon() const override { return fordon; }
+	virtual void processEvent(std::vector<std::shared_ptr<Train_Station>> &vTrainStation) override;
+};
 
 
+class Assembled : public Event
+{
+protected:
+	std::shared_ptr<Train> train;
+
+public:
+	Assembled(int t, std::shared_ptr<Train> aTrain) :Event::Event(t), train(aTrain) {}
+
+	// Inherited via Event
+	virtual void processEvent(std::vector<std::shared_ptr<Train_Station>> &vTrainStation) override;
 };
 
 #endif

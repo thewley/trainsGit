@@ -10,7 +10,7 @@
 class Wagon : public Fordon
 {
 public:
-	Wagon(int aFordonID) : Fordon::Fordon(aFordonID) {};
+	Wagon(int aFordonID,int aFordonType ) : Fordon::Fordon(aFordonID, aFordonType) {};
 	// Inherited via Fordon
 	virtual void print() =0;
 };
@@ -23,7 +23,7 @@ private:
 
 public:
 
-	Sit_Wagon(int aFordonID, bool aInternet, int aNrOfSeats) : internet(aInternet), nrOfSeats(aNrOfSeats), Wagon::Wagon(aFordonID) {};
+	Sit_Wagon(int aFordonID, int aFordonType, bool aInternet, int aNrOfSeats) : internet(aInternet), nrOfSeats(aNrOfSeats), Wagon::Wagon(aFordonID, aFordonType) {};
 
 	// Inherited via Wagon
 	virtual void print() override;
@@ -36,7 +36,7 @@ private:
 	int nrOfBeds;
 
 public:
-	Sleeping_Wagon(int aFordonID, int aNrOfBeds) : nrOfBeds(aNrOfBeds), Wagon::Wagon(aFordonID) { std::cout << "Sleeping_Wagon" << std::endl; };
+	Sleeping_Wagon(int aFordonID, int aFordonType, int aNrOfBeds) : nrOfBeds(aNrOfBeds), Wagon::Wagon(aFordonID, aFordonType) { std::cout << "Sleeping_Wagon" << std::endl; };
 
 	// Inherited via Wagon
 	virtual void print() override;
@@ -52,7 +52,7 @@ private:
 
 public:
 
-	Open_Wagon(int aFordonID, float aCapacity, float aArea) :capacity(aCapacity), area(aArea), Wagon::Wagon(aFordonID) { std::cout << "Open_Wagon" << std::endl; };
+	Open_Wagon(int aFordonID, int aFordonType, float aCapacity, float aArea) :capacity(aCapacity), area(aArea), Wagon::Wagon(aFordonID, aFordonType) { std::cout << "Open_Wagon" << std::endl; };
 
 	// Inherited via Wagon
 	virtual void print() override;
@@ -65,7 +65,7 @@ class Covered_Wagon : public Wagon
 private:
 	float area;
 public:
-	Covered_Wagon(int aFordonID, float aArea) :area(aArea), Wagon::Wagon(aFordonID) { std::cout << "Covered_Wagon" << std::endl; };
+	Covered_Wagon(int aFordonID, int aFordonType, float aArea) :area(aArea), Wagon::Wagon(aFordonID, aFordonType) { std::cout << "Covered_Wagon" << std::endl; };
 
 	// Inherited via Wagon
 	virtual void print() override;

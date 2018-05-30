@@ -11,10 +11,13 @@ class Fordon
 {
 protected:
 	int fordonID;
+	int fordonType;
 
 public:
-	Fordon(int aFordonID) : fordonID(aFordonID) {};
+	Fordon(int aFordonID, int aFordonType) : fordonID(aFordonID), fordonType(aFordonType) {};
 	virtual ~Fordon() { std::cout << "~Fordon" << std::endl; }
+	int getFordonID() { return fordonID; }
+	int getFordonType() const { return fordonType; }
 	virtual void print() = 0;
 };
 

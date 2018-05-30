@@ -24,11 +24,12 @@ public:
 class Railway
 {
 private:
-	std::vector<Train_Station*> *vTrainStation;
+	std::vector<std::shared_ptr<Train_Station>> *vTrainStation;
 	std::vector<Event> *vEvent;
 	std::priority_queue<std::shared_ptr<Event>, std::vector<std::shared_ptr<Event>>, TimeComparison> *eventQueue;
 	// std::priority_queue<Event*, std::vector<Event*>, TimeComparison> *eventQueue;
 	Train_Station *tmpTs;
+	int currentTime;
 
 public:
 	Railway();
@@ -37,16 +38,15 @@ public:
 	void print();
 	void readTrainStations();
 	void readTrains();
-	void printTT();
-	void printTT(std::shared_ptr<Event> aEvent);
 	void printFirstInQueue();
-	void scheduleTT(Event *newEvent);
+	void scheduleEvent(Event *newEvent);
 	int timeToMin(std::string &aString);
+	void run();
 };
 
 
-bool operator<(const std::shared_ptr<Event> &lhs, const std::shared_ptr<Event> &rhs)
-{
-	return lhs->getTime() < rhs->getTime();
-};
+//bool operator<(const std::shared_ptr<Event> &lhs, const std::shared_ptr<Event> &rhs)
+//{
+//	return lhs->getTime() < rhs->getTime();
+//};
 #endif

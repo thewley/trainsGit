@@ -10,22 +10,31 @@
 #include"locomotive.h"
 
 Railway::Railway()
+	:currentTime(0)
 {
-	vTrainStation = new std::vector<Train_Station*>;
+	//new
+	/*vTrainStation = new std::vector<Train_Station*>;*/
+	
+	vTrainStation = new std::vector<std::shared_ptr<Train_Station>>;
 	vEvent = new std::vector<Event>;
 	eventQueue = new std::priority_queue<std::shared_ptr<Event>, std::vector<std::shared_ptr<Event>>, TimeComparison>;
+
+	readTrainStations();
+	readTrains();
 }
 
 Railway::~Railway()
 {
 	std::cout << tmpTs << std::endl;
 	std::cout << "~Railway" << std::endl;
-	for (auto &idx : *vTrainStation)
-	{
-		std::cout << "TRAIN_STATION IN RAILWAY : IDX : " << idx << std::endl;
-		delete idx;
-		idx = nullptr;
-	}
+
+	//new
+	//for (auto &idx : *vTrainStation)
+	//{
+	//	std::cout << "TRAIN_STATION IN RAILWAY : IDX : " << idx << std::endl;
+	//	delete idx;
+	//	idx = nullptr;
+	//}
 	
 	vTrainStation->clear();
 	delete vTrainStation;
@@ -43,7 +52,8 @@ void Railway::print()
 {
 	for (auto &idx : *vTrainStation)
 	{
-		idx->print();
+		//idx->print();
+		std::cout << idx->getTrainStationName() << std::endl;
 	}
 }
 
@@ -53,7 +63,7 @@ void Railway::readTrainStations()
 
 	std::string tmpStr;
 	std::string name;
-	int tmpID, tmpFordon, tmpSeats, tmpInet, tmpBeds, tmpCapacity, tmpSquare, tmpCubic, tmpMaxSpeed, tmpEffect, tmpFuel;
+	int tmpID, tmpType, tmpSeats, tmpInet, tmpBeds, tmpCapacity, tmpSquare, tmpCubic, tmpMaxSpeed, tmpEffect, tmpFuel;
 	bool moreToRead;
 	bool readInFile = true;
 	std::ifstream inFile;
@@ -80,42 +90,42 @@ void Railway::readTrainStations()
 		while (moreToRead)
 		{
 			ss >> tmpID;
-			ss >> tmpFordon;
+			ss >> tmpType;
 
-			switch (tmpFordon)
+			switch (tmpType)
 			{
 			case (SIT_WAGON):
 				ss >> tmpSeats;
 				ss >> tmpInet;
-				tmpTs->addFordon(*new Sit_Wagon(tmpID, tmpInet, tmpSeats));
+				tmpTs->addFordon(*new Sit_Wagon(tmpID, tmpType, tmpInet, tmpSeats));
 				//tmpTs.addToMap(tmpFordon, *new Sit_Wagon(tmpID, tmpInet, tmpSeats));
 				break;
 			case (SLEEPING_WAGON):
 				ss >> tmpBeds;
-				tmpTs->addFordon(*new Sleeping_Wagon(tmpID, tmpBeds));
+				tmpTs->addFordon(*new Sleeping_Wagon(tmpID, tmpType, tmpBeds));
 				//tmpTs.addToMap(tmpFordon, *new Sleeping_Wagon(tmpID, tmpBeds));
 				break;
 			case (OPEN_WAGON):
 				ss >> tmpCapacity;
 				ss >> tmpSquare;
-				tmpTs->addFordon(*new Open_Wagon(tmpID, tmpCapacity, tmpSquare));
+				tmpTs->addFordon(*new Open_Wagon(tmpID, tmpType, tmpCapacity, tmpSquare));
 				//tmpTs.addToMap(tmpFordon, *new Open_Wagon(tmpID, tmpCapacity, tmpSquare));
 				break;
 			case (COVERED_WAGON):
 				ss >> tmpCubic;
-				tmpTs->addFordon(*new Covered_Wagon(tmpID, tmpCubic));
+				tmpTs->addFordon(*new Covered_Wagon(tmpID, tmpType, tmpCubic));
 				//tmpTs.addToMap(tmpFordon, *new Covered_Wagon(tmpID, tmpCubic));
 				break;
 			case (ELECTRIC_LOCOMOTIVE):
 				ss >> tmpMaxSpeed;
 				ss >> tmpEffect;
-				tmpTs->addFordon(*new Electric_Locomotive(tmpID, tmpEffect, tmpMaxSpeed));
+				tmpTs->addFordon(*new Electric_Locomotive(tmpID, tmpType, tmpEffect, tmpMaxSpeed));
 				//tmpTs.addToMap(tmpFordon, *new Electric_Locomotive(tmpID, tmpEffect, tmpMaxSpeed));
 				break;
 			case (DIESEL_LOCOMOTIVE):
 				ss >> tmpMaxSpeed;
 				ss >> tmpFuel;
-				tmpTs->addFordon(*new Diesel_Locomotive(tmpID, tmpFuel, tmpMaxSpeed));
+				tmpTs->addFordon(*new Diesel_Locomotive(tmpID, tmpType, tmpFuel, tmpMaxSpeed));
 				//tmpTs.addToMap(tmpFordon, *new Diesel_Locomotive(tmpID, tmpFuel, tmpMaxSpeed));
 				break;
 			default:
@@ -143,11 +153,13 @@ void Railway::readTrains()
 
 	while (std::getline(inFile, tmpStr))
 	{
+		
 		int time;
 		int trainId, maxSpeed;
 		Travel travelFrom, travelTo;
 		std::string fromTime, toTime, fordon;
 		std::stringstream ss(tmpStr);
+		
 		ss >> trainId;
 		ss >> travelFrom.trainstation;
 		ss >> travelTo.trainstation;
@@ -162,43 +174,20 @@ void Railway::readTrains()
 		time = timeToMin(fromTime) - TIME_TO_ASSEMBLE;
 
 
-		scheduleTT(new Not_Assembled(time,trainId,travelFrom,travelTo,maxSpeed,fordon));
+		scheduleEvent(new Not_Assembled(time, new Train(trainId, maxSpeed, travelFrom, travelTo, fordon)));
+		
 		
 	}	
-}
-
-void Railway::printTT(std::shared_ptr<Event> aEvent)
-{
-	std::cout << "Train id: " << aEvent->getTrainId() << std::endl;
-	std::cout << "Traveling from: " << aEvent->getTravelFrom().trainstation << std::endl;
-	std::cout << "Dep time: " << aEvent->getTravelFrom().time << std::endl;
-	std::cout << "Traveling to: " << aEvent->getTravelTo().trainstation << std::endl;
-	std::cout << "Arrival time: " << aEvent->getTravelTo().time << std::endl;
-	std::cout << "Max speed: " << aEvent->getMaxSpeed() << std::endl;
-
-}
-
-void Railway::printTT()
-{
-	for (auto &idx : *vEvent)
-	{
-		std::cout << "Train id: " << idx.getTrainId() << std::endl;
-		std::cout << "Traveling from: " << idx.getTravelFrom().trainstation << std::endl;
-		std::cout << "Dep time: " <<idx.getTravelFrom().time << std::endl;
-		std::cout << "Traveling to: "<< idx.getTravelTo().trainstation << std::endl;
-		std::cout << "Arrival time: " << idx.getTravelTo().time << std::endl;
-		std::cout << "Max speed: " << idx.getMaxSpeed() << std::endl;
-	}
 }
 
 void Railway::printFirstInQueue()
 {
 	std::shared_ptr<Event> ev = eventQueue->top();
 	eventQueue->pop();
-	printTT(ev);
+	ev->print();
 }
 
-void Railway::scheduleTT(Event *newEvent)
+void Railway::scheduleEvent(Event *newEvent)
 {
 	eventQueue->emplace(newEvent);
 }
@@ -212,6 +201,17 @@ int Railway::timeToMin(std::string &aString)
 	ss >> tmpM;
 	totTime = tmpH * 60 + tmpM;
 	return totTime;
+}
+
+void Railway::run()
+{
+	while (!eventQueue->empty())
+	{
+	std::shared_ptr<Event> ev = eventQueue->top();
+	eventQueue->pop();
+	currentTime = ev->getTime();
+	ev->processEvent(*vTrainStation);
+	}
 }
 
 
