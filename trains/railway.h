@@ -7,9 +7,14 @@
 
 #include"Train_Station.h"
 #include"Event.h"
+
 #include<memory>
 #include<queue>
+using std::priority_queue;
+using std::vector;
+using std::shared_ptr;
 
+class Event;
 
 class TimeComparison
 {
@@ -23,15 +28,8 @@ public:
 
 class Railway
 {
-private:
-	std::vector<std::shared_ptr<Train_Station>> *vTrainStation;
-	std::vector<Event> *vEvent;
-	std::priority_queue<std::shared_ptr<Event>, std::vector<std::shared_ptr<Event>>, TimeComparison> *eventQueue;
-	// std::priority_queue<Event*, std::vector<Event*>, TimeComparison> *eventQueue;
-	Train_Station *tmpTs;
-	int currentTime;
-
 public:
+
 	Railway();
 	~Railway();
 	void addTrainStation(Train_Station &ts);
@@ -41,7 +39,24 @@ public:
 	void printFirstInQueue();
 	void scheduleEvent(Event *newEvent);
 	int timeToMin(std::string &aString);
+	void doMenuTwo();
+
+	void runEvent();
 	void run();
+
+private:
+
+	Event::TrainStations *vTrainStations;
+	Event::EventPrioQ *eventQueue;
+	Train_Map *theTrainMap;
+
+	std::vector<Event> *vEvent;
+	// std::priority_queue<Event*, std::vector<Event*>, TimeComparison> *eventQueue;
+	Train_Station *tmpTs;
+
+	int currentTime;
+	int interval = 10;
+	
 };
 
 

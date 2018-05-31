@@ -16,10 +16,10 @@ Train_Station::Train_Station()
 
 Train_Station::~Train_Station()
 {
-	std::cout << "~Train_Station" << std::endl;
+	//std::cout << "~Train_Station" << std::endl;
 	for (auto &idx : *unusedFordon)
 	{
-		std::cout << "DELETE UNUSED : IDX : " << idx << std::endl;
+		//std::cout << "DELETE UNUSED : IDX : " << idx << std::endl;
 		delete idx;
 		idx = nullptr;
 	}
@@ -42,20 +42,43 @@ bool Train_Station::assembleTrain(Train &aTrain)
 		{
 			return vFordon->getFordonType() == tmpType;
 		});
-		
+
+		size_t index = std::distance(unusedFordon->begin(), it);
+
 		if (it != unusedFordon->end())
 		{
-			Fordon *f = *it;
-			aTrain.add(*f);
+			//unusedFordon->at(index);
+			//Fordon *f = *it;
+			aTrain.add(unusedFordon->at(index));
 			unusedFordon->erase(it);
 		}
 		else
 		{
-			aTrain.setDelay(10);
+			std::string tmpString;
+			std::getline(ss, tmpString);
+			std::string newFordonInTrain = std::to_string(tmpType) + " " + tmpString;
+			
+			aTrain.setFordonInTrain(newFordonInTrain);
 			return false;
 		}
 	}
-	addTrain(aTrain);
+	addTrain(&aTrain);
+	return true;
+}
+
+bool Train_Station::deassembleTrain(Train & aTrain)
+{
+	//KOLLA PÅ DENNA, BORDE FUNGERA MEN GÖR DET NOG INTE -.-.-.-
+	for (auto idx : aTrain.getVFordon())
+	{
+		unusedFordon->emplace_back(idx);
+	}
+	aTrain.clearVFordon();
+	std::sort(unusedFordon->begin(), unusedFordon->end(), [](const Fordon *left, const Fordon *right) 
+	{
+		return left->getFordonID() < right->getFordonID();
+	});
+
 	return true;
 }
 
@@ -91,9 +114,9 @@ void Train_Station::addFordon(Fordon &aFordon)
 	unusedFordon->emplace_back(&aFordon);
 }
 
-void Train_Station::addTrain(Train & aTrain)
+void Train_Station::addTrain(Train *aTrain)
 {
-	vTrain->emplace_back(&aTrain);
+	vTrain->emplace_back(aTrain);
 }
 
 

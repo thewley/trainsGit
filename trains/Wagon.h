@@ -36,7 +36,7 @@ private:
 	int nrOfBeds;
 
 public:
-	Sleeping_Wagon(int aFordonID, int aFordonType, int aNrOfBeds) : nrOfBeds(aNrOfBeds), Wagon::Wagon(aFordonID, aFordonType) { std::cout << "Sleeping_Wagon" << std::endl; };
+	Sleeping_Wagon(int aFordonID, int aFordonType, int aNrOfBeds) : nrOfBeds(aNrOfBeds), Wagon::Wagon(aFordonID, aFordonType) { };
 
 	// Inherited via Wagon
 	virtual void print() override;
@@ -52,7 +52,7 @@ private:
 
 public:
 
-	Open_Wagon(int aFordonID, int aFordonType, float aCapacity, float aArea) :capacity(aCapacity), area(aArea), Wagon::Wagon(aFordonID, aFordonType) { std::cout << "Open_Wagon" << std::endl; };
+	Open_Wagon(int aFordonID, int aFordonType, float aCapacity, float aArea) :capacity(aCapacity), area(aArea), Wagon::Wagon(aFordonID, aFordonType) {};
 
 	// Inherited via Wagon
 	virtual void print() override;
@@ -65,7 +65,7 @@ class Covered_Wagon : public Wagon
 private:
 	float area;
 public:
-	Covered_Wagon(int aFordonID, int aFordonType, float aArea) :area(aArea), Wagon::Wagon(aFordonID, aFordonType) { std::cout << "Covered_Wagon" << std::endl; };
+	Covered_Wagon(int aFordonID, int aFordonType, float aArea) :area(aArea), Wagon::Wagon(aFordonID, aFordonType) {};
 
 	// Inherited via Wagon
 	virtual void print() override;

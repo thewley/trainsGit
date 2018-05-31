@@ -41,13 +41,21 @@ public:
 	~Train();
 
 
-	void add(Fordon &aFordon);
+	void add(Fordon *aFordon);
 	Travel getTravelFrom() const { return travelFrom; }
+	Travel getTravelTo() const { return travelTo; }
+	std::vector<Fordon*> getVFordon() { return *vFordon; }
 	std::string getFordonInTrain() const { return fordonInTrain; }
-	void setDelay(int aDelay) { delay += 10; }
+	void setFordonInTrain(std::string _fordonInTrain) { fordonInTrain = _fordonInTrain; }
+	int getTrainID() const { return trainID; }
+	int getDelay() const { return delay; }
+	void clearVFordon() { vFordon->clear(); }
+	void setDelay() { delay += 10; }
 	void setState(State aState) { state = aState; }
 	void print();
 
 };
+
+void timeToHandM(int time);
 
 #endif

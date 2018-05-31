@@ -3,6 +3,7 @@
 //	railway.cpp - Definitionsfil för klassen railway
 
 #include "railway.h"
+#include "Event.h"
 #include <fstream>
 #include<sstream>
 #include<algorithm>
@@ -14,10 +15,11 @@ Railway::Railway()
 {
 	//new
 	/*vTrainStation = new std::vector<Train_Station*>;*/
-	
-	vTrainStation = new std::vector<std::shared_ptr<Train_Station>>;
+	std::ofstream of("finishedtrains.txt");
+	vTrainStations = new Event::TrainStations;
 	vEvent = new std::vector<Event>;
-	eventQueue = new std::priority_queue<std::shared_ptr<Event>, std::vector<std::shared_ptr<Event>>, TimeComparison>;
+	eventQueue = new Event::EventPrioQ;
+	theTrainMap = new Train_Map;
 
 	readTrainStations();
 	readTrains();
@@ -36,21 +38,22 @@ Railway::~Railway()
 	//	idx = nullptr;
 	//}
 	
-	vTrainStation->clear();
-	delete vTrainStation;
+	vTrainStations->clear();
+	delete vTrainStations;
 	delete vEvent;
 	delete tmpTs;
 	delete eventQueue;
+	delete theTrainMap;
 }
 
 void Railway::addTrainStation(Train_Station &ts)
 {
-	vTrainStation->emplace_back(&ts);
+	vTrainStations->emplace_back(&ts);
 }
 
 void Railway::print()
 {
-	for (auto &idx : *vTrainStation)
+	for (auto &idx : *vTrainStations)
 	{
 		//idx->print();
 		std::cout << idx->getTrainStationName() << std::endl;
@@ -173,8 +176,7 @@ void Railway::readTrains()
 
 		time = timeToMin(fromTime) - TIME_TO_ASSEMBLE;
 
-
-		scheduleEvent(new Not_Assembled(time, new Train(trainId, maxSpeed, travelFrom, travelTo, fordon)));
+		scheduleEvent(new Not_Assembled(time, new Train(trainId, maxSpeed, travelFrom, travelTo, fordon), eventQueue, vTrainStations));
 		
 		
 	}	
@@ -203,15 +205,134 @@ int Railway::timeToMin(std::string &aString)
 	return totTime;
 }
 
-void Railway::run()
+void Railway::doMenuTwo()
 {
-	while (!eventQueue->empty())
+	char choice;
+	std::string tmpS;
+	bool doMenu = true;
+
+	do
 	{
+		std::cout << "1. Choose interval ["; timeToHandM(interval); std::cout << "]" << std::endl;
+		std::cout << "2. Run next interval" << std::endl;
+		std::cout << "3. Run next event" << std::endl;
+		std::cout << "4. Finish simulation" << std::endl;
+		std::cout << "5. change log level: " << std::endl;
+		std::cout << "6. Train menu" << std::endl;
+		std::cout << "7. Station menu" << std::endl;
+		std::cout << "8. Vehicle menu" << std::endl;
+		std::cout << "0. Exit" << std::endl;
+		std::cin >> choice;
+		std::cin.get();
+
+		switch (choice)
+		{
+		case '1':
+			std::cout << "Choose interval time [(H)H:MM] : ";
+			getline(std::cin, tmpS);
+			interval = timeToMin(tmpS);
+			break;
+		case '2':
+			doMenu = false;
+			break;
+		case '3':
+			runEvent();
+			break;
+		case '4':
+			interval = TOTAL_SIM_TIME - currentTime;
+			doMenu = false;
+			break;
+		case '5':
+			break;
+		case '6':
+			break;
+		case '7':
+			break;
+		case '8':
+			break;
+		case '0':
+			break;
+		default:
+			break;
+		}
+	} while (doMenu);
+	
+}
+
+void Railway::runEvent()
+{
 	std::shared_ptr<Event> ev = eventQueue->top();
 	eventQueue->pop();
 	currentTime = ev->getTime();
-	ev->processEvent(*vTrainStation);
-	}
+	ev->processEvent();
+}
+
+void Railway::run()
+{
+	int cTime = 0;
+	int startTime = 0;
+	int endTime = 1439;
+	char choice;
+	bool doMenu = true;
+	std::string tmpS;
+	std::vector<Train> finishedTrains;
+
+	do
+	{
+		std::cout << "1. choose your start time currently: "; timeToHandM(startTime); std::cout << std::endl;
+		std::cout << "2. choose your end time currently: "; timeToHandM(endTime); std::cout << std::endl;
+		std::cout << "3. start sim" << std::endl;
+		std::cin >> choice;
+		std::cin.get();
+		switch (choice)
+		{
+		case '1':
+			std::cout << "Choose start time [(H)H:MM] : ";
+			getline(std::cin, tmpS);
+			startTime = timeToMin(tmpS);
+			break;
+		case '2':
+			std::cout << "Choose end time [(H)H:MM] : ";
+			getline(std::cin, tmpS);
+			endTime = timeToMin(tmpS);
+			break;
+		case '3':
+			std::cout << "Starting Simulation!" << std::endl;
+			doMenu = false;
+			break;
+		default:
+			break;
+		}
+
+	} while (doMenu);
+
+	for (size_t i = 0; i < endTime;)
+	{
+		if (i >= startTime)
+		{
+			timeToHandM(cTime);
+			std::cout << std::endl;
+			doMenuTwo();
+		}
+		
+		for (size_t j = 0; j < interval; j++)
+		{		
+			std::shared_ptr<Event> ev = eventQueue->top();
+			while (ev->getTime() == cTime)
+			{
+				eventQueue->pop();
+				currentTime = ev->getTime();
+				std::cout << "Time: "; timeToHandM(currentTime); std::cout << std::endl;
+				//ev->print();
+				ev->processEvent();
+				ev = eventQueue->top();
+				
+			}
+				cTime++;
+				i++;
+		}
+	}	
+
 }
 
 

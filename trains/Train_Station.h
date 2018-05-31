@@ -32,10 +32,11 @@ public:
 	std::string getTrainStationName() const { return stationName; }
 	
 	bool assembleTrain(Train &aTrain);
+	bool deassembleTrain(Train &aTrain);
 	void print();
 	//void printMap();
 	void addFordon(Fordon &aFordon);
-	void addTrain(Train &aTrain);
+	void addTrain(Train *aTrain);
 	//void addToMap(int ft, Fordon &aFordon);
 };
 
