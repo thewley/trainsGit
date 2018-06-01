@@ -7,6 +7,7 @@
 
 #include "fordon.h"
 
+//	Class locomotive, inheritance from Fordon, abstract class base for all the different types of locomotives.
 class Locomotive : public Fordon
 {
 protected:
@@ -21,6 +22,7 @@ public:
 	virtual void print() = 0;
 };
 
+//	Electric Locomotive, inheritance from Locomotive.
 class Electric_Locomotive : public Locomotive
 {
 private:
@@ -32,6 +34,7 @@ public:
 	virtual void print() override;
 };
 
+//	Diesel Locomotive, inheritance from Locomotive.
 class Diesel_Locomotive : public Locomotive
 {
 private:

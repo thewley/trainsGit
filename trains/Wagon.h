@@ -7,6 +7,7 @@
 
 #include"fordon.h"
 
+//	Wagon, inheritance from Fordon, abstract class
 class Wagon : public Fordon
 {
 public:
@@ -15,6 +16,7 @@ public:
 	virtual void print() =0;
 };
 
+//	Sit Wagon, inheritance from Wagon.
 class Sit_Wagon : public Wagon
 {
 private:
@@ -30,6 +32,7 @@ public:
 
 };
 
+//	Sleeping Wagon, inheritance from Wagon
 class Sleeping_Wagon : public Wagon
 {
 private:
@@ -42,7 +45,7 @@ public:
 	virtual void print() override;
 };
 
-
+//	Open Wagon, inheritance from Wagon
 class Open_Wagon : public Wagon
 {
 private:
@@ -59,7 +62,7 @@ public:
 
 };
 
-
+//	Covered Wagon, inheritance from Wagon
 class Covered_Wagon : public Wagon
 {
 private:

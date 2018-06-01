@@ -122,7 +122,6 @@
     <ClInclude Include="mempool.h" />
     <ClInclude Include="memstat.hpp" />
     <ClInclude Include="railway.h" />
-    <ClInclude Include="Simulation.h" />
     <ClInclude Include="train.h" />
     <ClInclude Include="Train_Map.h" />
     <ClInclude Include="Train_Station.h" />
@@ -133,7 +132,6 @@
     <ClCompile Include="locomotive.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="railway.cpp" />
-    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="train.cpp" />
     <ClCompile Include="Train_Map.cpp" />
     <ClCompile Include="Train_Station.cpp" />

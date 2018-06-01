@@ -16,6 +16,15 @@ using std::shared_ptr;
 
 class Event;
 
+//	TimeTable, used in a vector to keep track of all the startingtimes and endtimes for the timetable.
+struct TimeTable
+{
+	int trainID;
+	Travel travelTo;
+	Travel travelFrom;
+};
+
+//	Comparing the time for the Priority_queue
 class TimeComparison
 {
 public:
@@ -30,19 +39,30 @@ class Railway
 {
 public:
 
+	//	Constructor and destructor
 	Railway();
 	~Railway();
+
+	//	Memberfunctions
 	void addTrainStation(Train_Station &ts);
-	void print();
+	void printTrainStationNames();
 	void readTrainStations();
 	void readTrains();
 	void printFirstInQueue();
 	void scheduleEvent(Event *newEvent);
 	int timeToMin(std::string &aString);
-	void doMenuTwo();
+	void simMenu();
+	void changeInfo();
+	void trainMenu();
+	void printTrain(std::string trainID);
+	void showTimeTable();
+	void stationMenu();
+	bool printStation(std::string stationName);
 
+	//	Run loop
 	void runEvent();
 	void run();
+	
 
 private:
 
@@ -50,18 +70,16 @@ private:
 	Event::EventPrioQ *eventQueue;
 	Train_Map *theTrainMap;
 
-	std::vector<Event> *vEvent;
-	// std::priority_queue<Event*, std::vector<Event*>, TimeComparison> *eventQueue;
+	std::vector<std::shared_ptr<Event>> *vEventFinished;
+	std::vector<std::shared_ptr<Event>> *vEventIncomplete;
+	std::vector<TimeTable> vTimeTable;
 	Train_Station *tmpTs;
-
+	
+	Information info = LOW;
 	int currentTime;
 	int interval = 10;
-	
+	int endTime = 1439;
+	bool startOfSim = true;
 };
 
-
-//bool operator<(const std::shared_ptr<Event> &lhs, const std::shared_ptr<Event> &rhs)
-//{
-//	return lhs->getTime() < rhs->getTime();
-//};
 #endif

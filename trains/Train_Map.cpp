@@ -1,6 +1,7 @@
 //	Jonathan Bengtsson
 //	Projekt Trains V1.0
 //	train_map.cpp - Definitionsfil för Train_Map-klassen
+//	Class for higher grade.
 
 #include "Train_Map.h"
 #include <fstream>
@@ -22,6 +23,7 @@ Train_Map::Train_Map()
 	std::ios_base::iostate mask = std::ios::eofbit | std::ios::failbit | std::ios::badbit;
 	inFile.exceptions(mask);
 
+	//	Trying to read the trainmao.txt
 	while (moreToRead)
 	{
 		try

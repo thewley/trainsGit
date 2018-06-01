@@ -8,21 +8,10 @@
 #include <iterator>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
+//	All events print on file.
 
-std::ofstream outFile;
-std::vector<int> tmp;
-
-void printOnFile()
-{
-	outFile.open("incomplete.txt");
-	for (auto idx : tmp)
-	{
-		outFile << idx << std::endl;
-	}
-	outFile.close();
-}
-
-
+//	Processing the Not_Assembled event, Finds the correct station and tries to assemble the train, if it works the train is set as assembled, otherwise it will be incomplete.
 void Not_Assembled::processEvent()
 {
 
@@ -31,73 +20,68 @@ void Not_Assembled::processEvent()
 		return train->getTravelFrom().trainstation == ts->getTrainStationName();
 	});
 	
-	//std::shared_ptr<Train_Station> ts = *it;
-
 	size_t index = std::distance(vTrainStation->begin(), it);
 
-	//vTrainStation->erase(it);
-	//ts->print();
-	//vTrainStation->at(index)->print();
 	if (vTrainStation->at(index)->assembleTrain(*train))
 	{
-		//std::cout << "Train assembled! " << std::endl;
-		//std::cout << train->getTrainID() << std::endl;
-		time += 20;
-		//train->print();
-		train->setState(ASSEMBLED);
-		//vTrainStation->at(index)->print();
-		//ts->print();
-		//vTrainStation->push_back(ts);
 
+		printOnFile(train.get(), ASSEMBLED);
+
+		time += 20;
+		train->setState(ASSEMBLED);
+		
 		Event *e = new Assembled(time, train, epQ, vTrainStation);
 		epQ->emplace(e);
-		
 	}
 	else
 	{
-
-		//std::cout << "Train delayed by 10 minutes!" << std::endl;
-		//std::cout << train->getTrainID() << std::endl;
+		printOnFile(train.get(), INCOMPLETE);
 		train->setDelay();
 		train->setState(INCOMPLETE);
-		/*std::cout << train->getTrainID() << std::endl;*/
-		//tmp.push_back(train->getTrainID());
-		//printOnFile();
-		//vTrainStation->push_back(ts);
 
-		
-		//Event *e = new Incomplete(time, train, epQ, vTrainStation);
-		//epQ->emplace(e);
+		Event *e = new Incomplete(time+3000, train, epQ, vTrainStation);
+		epQ->emplace(e);
 		
 	}
-	
-	
-	//auto i = std::find_if(ts->)
-	//train->add();
-		
-
 }
 
-void Not_Assembled::print()
+//	Print for the not_assembled event
+void Not_Assembled::print(Information info)
 {
-	train->print();
+	if (info == TIMETABLE)
+		printTT(train);
+	else
+	{
+		train->print(info);
+		std::cout << "is now assembled " << std::endl << std::endl;
+	}
+	
+
 }
 
+//	Processing the Assembled event, making the train ready and putting it back in the queue as a ready event.
 void Assembled::processEvent()
 {
-	//std::cout << "ASSEMBLEEEEEEEEEED" << std::endl;
-	//std::cout << train->getTrainID() << std::endl;
+	printOnFile(train.get(), READY);
 	train->setState(READY);
 	time += 10;
 	Event *e = new Ready(time, train, epQ, vTrainStation);
 	epQ->emplace(e);
 }
 
-void Assembled::print()
+//	Printing the assembled event.
+void Assembled::print(Information info)
 {
-	train->print();
+	if (info == TIMETABLE)
+		printTT(train);
+	else
+	{
+		train->print(info);
+		std::cout << "is now ready" << std::endl << std::endl;
+	}
 }
 
+//	För högre betyg
 void Incomplete::processEvent()
 {
 	//std::cout << "INCOMPLETE" << std::endl;
@@ -134,89 +118,114 @@ void Incomplete::processEvent()
 	
 }
 
-void Incomplete::print()
+//	Printing the incomplete event.
+void Incomplete::print(Information info)
 {
-	train->print();
+	if (info == TIMETABLE)
+		printTT(train);
+	else
+	{
+		train->print(info);
+		std::cout << "is now incomplete" << std::endl << std::endl;
+	}	
 }
 
+//	Processing a ready event, makes so it goes into running and pusing back a new running event.
 void Ready::processEvent()
 {
-	//std::cout << "READYYYYYY" << std::endl;
-	//std::cout << train->getTrainID() << std::endl;
+	printOnFile(train.get(), RUNNING);
 	train->setState(RUNNING);
-	//std::cout << "TRAIN GOING FROM READY TO RUNNING" << std::endl;
-	//std::cout << "ID: " << train->getTrainID()  << " at the time From: "; timeToHandM(train->getTravelFrom().time); std::cout << " To: ";  timeToHandM(train->getTravelTo().time); std::cout << std::endl;
 	time = train->getTravelTo().time;
 	Event *e = new Running(time,train,epQ,vTrainStation);
 	epQ->emplace(e);
 
 }
-void Ready::print()
+
+//	Printing the ready event.
+void Ready::print(Information info)
 {
-	train->print();
+	if (info == TIMETABLE)
+		printTT(train);
+	else
+	{
+		train->print(info);
+		std::cout << "is now running" << std::endl << std::endl;
+	}
 }
 
+//	Processing the running event, making it to the state Arrived and pushing a new arrived event to the queue.
 void Running::processEvent()
 {
-	//std::cout << "RUNNIN RUNNIN RUNNIN " << std::endl;
-	//std::cout << train->getTrainID() << std::endl;
+	printOnFile(train.get(), ARRIVED);
 	time = train->getTravelTo().time + train->getDelay() + 20;
 	train->setState(ARRIVED);
-	printFinishedTrain();
 	Event *e = new Arrived(time, train, epQ, vTrainStation);
 	epQ->emplace(e);
 }
 
-void Running::print()
+//	Printing the Running event
+void Running::print(Information info)
 {
-	train->print();
+	if (info == TIMETABLE)
+		printTT(train);
+	else
+	{
+		train->print(info);
+		std::cout << "has now arrived" << std::endl << std::endl;
+	}	
 }
 
+//	Processing the Arrived event, finding the station it reached, and deassemble the train there, also puts the train in the new station.
 void Arrived::processEvent()
 {
-	//std::cout << "ARRIVED" << std::endl;
-	//std::cout << train->getTrainID() << std::endl;
+	printOnFile(train.get(), FINISHED);
 	train->setState(FINISHED);
+	//	Getting the station the train left from and removes the train from that station
+	auto itFrom = std::find_if(vTrainStation->begin(), vTrainStation->end(), [&](std::shared_ptr<Train_Station> ts)
+	{
+		return train->getTravelFrom().trainstation == ts->getTrainStationName();
+	});
+	size_t indexFrom = std::distance(vTrainStation->begin(), itFrom);
+	vTrainStation->at(indexFrom)->removeTrain(train->getTrainID());
 
-	auto it = std::find_if(vTrainStation->begin(), vTrainStation->end(), [&](std::shared_ptr<Train_Station> ts)
+	//	Placing the train at the arrival station.
+	auto itTo = std::find_if(vTrainStation->begin(), vTrainStation->end(), [&](std::shared_ptr<Train_Station> ts)
 	{
 		return train->getTravelTo().trainstation == ts->getTrainStationName();
 	});
+	size_t indexTo = std::distance(vTrainStation->begin(), itTo);
+	vTrainStation->at(indexTo)->addTrain(train.get());
 
-	//std::shared_ptr<Train_Station> ts = *it;
-
-	size_t index = std::distance(vTrainStation->begin(), it);
-	
-	//vTrainStation->at(index)->print();
-
-	if (vTrainStation->at(index)->deassembleTrain(*train));
+	//	Deassemble the train at the arrival station.
+	if (vTrainStation->at(indexTo)->deassembleTrain(*train));
 	{
 		
 		train->setState(FINISHED);
-		//vTrainStation->at(index)->print();
 		Event *e = new Finished(time+100000, train);
 		epQ->emplace(e);
 	}
 
-	
-
-
 }
 
-void Arrived::print()
+//	Printing the Arrived event.
+void Arrived::print(Information info)
 {
-	train->print();
+	if (info == TIMETABLE)
+		printTT(train);
+	else
+	{
+		train->print(info);
+		std::cout << "is now finished" << std::endl << std::endl;
+	}	
 }
 
+//	Printing all the finnished trains, might remove this.
 void Running::printFinishedTrain()
 {
-	std::ofstream outFile("finishedtrains.txt", std::ios::app);
 	std::cout << train->getTrainID() << std::endl;
-	outFile << std::to_string(train->getTrainID()) << std::endl;
-
-	outFile.close();
 }
 
+//	Printing the finished event, (for the future)
 void Finished::processEvent()
 {
 	std::cout << "FINISHED TRAIN ******** TOO TOOO " << std::endl;
@@ -224,9 +233,22 @@ void Finished::processEvent()
 	
 }
 
-void Finished::print()
+
+//Help print functions,
+
+//	Printing the time table
+void printTT(std::shared_ptr<Train> train)
 {
-	std::cout << "TRAIN FKIN DONE" << std::endl;
+	std::cout << " From: " << train->getTravelFrom().trainstation << "("; timeToHandM(train->getTravelFrom().time); std::cout << ")" << std::endl;
+	std::cout << " To: " << train->getTravelTo().trainstation << "("; timeToHandM(train->getTravelTo().time); std::cout << ")" << std::endl << std::endl;
 }
 
+//	Printing every step on the trainsim.log
+void Event::printOnFile(Train *train, State state)
+{
+	std::ofstream outFile("trainsim.log", std::ios::app);
 
+	outFile <<std::setw(2) << std::setfill('0') << toHour(time) << ":" << std::setw(2) << std::setfill('0') << toMin(time) << " Train: " << train->getTrainID() << " State: " << ENUM_STATE[train->getState()] << std::endl;
+	outFile << "is now " << ENUM_STATE[state] << std::endl;
+	outFile.close();
+}

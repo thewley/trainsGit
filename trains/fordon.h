@@ -7,6 +7,7 @@
 
 #include<iostream>
 
+//	The Fordon class, abstract base class for all the different types of fordon
 class Fordon
 {
 protected:
@@ -15,7 +16,7 @@ protected:
 
 public:
 	Fordon(int aFordonID, int aFordonType) : fordonID(aFordonID), fordonType(aFordonType) {};
-	virtual ~Fordon() { std::cout << "~Fordon" << std::endl; }
+	virtual ~Fordon() { }
 	int getFordonID() const { return fordonID; }
 	int getFordonType() const { return fordonType; }
 	virtual void print() = 0;

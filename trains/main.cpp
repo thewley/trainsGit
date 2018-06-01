@@ -8,17 +8,17 @@
 #include"memstat.hpp"
 #include"railway.h"
 
-
+//	Main
 int main()
 {
 
 	
 	std::cout << "*******************************************" << std::endl << std::endl;
 
+	//	Creating the railway. all files are read in the constructor.
 	Railway rw;
-	
+	// starting to sim the event.
 	rw.run();
-
 	
 	std::cout << "*************************************************" << std::endl;
 

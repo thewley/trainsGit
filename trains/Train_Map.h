@@ -10,7 +10,7 @@
 #include<memory>
 #include<iostream>
 
-
+//	Struct to keep track of the distance from two stations.
 struct Distance
 {
 	std::string stationOne;
@@ -18,6 +18,8 @@ struct Distance
 	int distance;
 };
 
+//	Class train map, used to check the distance between two locations.
+//	For higher grade.
 class Train_Map
 {
 private:
@@ -26,7 +28,7 @@ private:
 public:
 
 	Train_Map();
-	~Train_Map() { vDistance->clear(); delete vDistance; std::cout << "~Train_Map" << std::endl; }
+	~Train_Map() { vDistance->clear(); delete vDistance; }
 
 	void print();
 	int findDistance(std::string aDistanceFrom, std::string aDistanceTo);
